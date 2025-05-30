@@ -147,7 +147,7 @@ def accept_order(order_id):
     conn.close()
 
     flash("Order accepted.", "success")
-    return redirect(url_for('Orders'))
+    return redirect(url_for('orders'))
 
 @app.route('/cancel_order/<int:order_id>', methods=['POST'])
 def cancel_order(order_id):
@@ -173,7 +173,7 @@ def cancel_order(order_id):
     conn.close()
 
     flash("Order cancelled.", "success")
-    return redirect(url_for('Orders') if user['role'] == 'admin' else url_for('My_Orders'))
+    return redirect(url_for('orders') if user['role'] == 'admin' else url_for('My_orders'))
 
 @app.route('/delete_order/<int:order_id>', methods=['POST'])
 def delete_order(order_id):
@@ -188,7 +188,7 @@ def delete_order(order_id):
     conn.close()
 
     flash("Order deleted.", "success")
-    return redirect(url_for('Orders'))
+    return redirect(url_for('orders'))
 
 @app.route("/sales")
 def sales():

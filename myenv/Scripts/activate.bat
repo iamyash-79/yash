@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=C:\Users\Acm\new project\myenv
+set VIRTUAL_ENV=C:\Users\acm\OneDrive\Desktop\Yash_official\myenv
 
 if not defined PROMPT set PROMPT=$P$G
 
