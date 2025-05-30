@@ -1,113 +1,93 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" x-data="ordersApp()">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Orders - {{ short_name }}</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/alpinejs" defer></script>
 </head>
-<body class="bg-gray-100 font-sans">
+<body class="bg-gray-100 min-h-screen flex flex-col md:flex-row">
+  {% include 'sidebar.html' %}
 
-  <div class="flex" id="mainContent">
-    <!-- Sidebar -->
-    <aside class="w-64 bg-gray-900 text-white min-h-screen">
-      <div class="p-4 font-bold text-xl border-b border-gray-700">YCC</div>
-      <div class="p-4 border-b border-gray-700">Welcome {{ short_name }}</div>
-      <nav class="text-sm">
-        <ul class="space-y-2 p-4">
-          <li class="text-gray-400 uppercase text-xs">Dashboard</li>
-          <li><a href="/home" class="flex items-center space-x-2 hover:text-blue-400"><span>🏠</span><span>Home</span></a></li>
-  {% if user.role == 'admin' %}
-          <li><a href="/Orders" class="flex items-center space-x-2 text-gray-300 bg-gray-800 rounded px-2 py-1"><span>📅</span><span>Orders</span></a></li>
-          <li><a href="/sales" class="flex items-center space-x-2 hover:text-blue-400"><span>💰</span><span>Sales</span></a></li>
-          <li><a href="/catalog" class="flex items-center space-x-2 hover:text-blue-400"><span>📚</span><span>Catalog</span></a></li>
-          <li><a href="/inbox" class="flex items-center space-x-2 hover:text-blue-400"><span>📬</span><span>Inbox</span></a></li>
-  {% endif %}
-  {% if user.role == 'user' %}
-          <li><a href="/My_Orders" class="flex items-center space-x-2 hover:text-blue-400"><span>📅</span><span>My Orders</span></a></li>
-          <li><a href="/Contact" class="flex items-center space-x-2 hover:text-blue-400"><span>📬</span><span>Contact us</span></a></li>
-  {% endif %}
-          <li><a href="/settings" class="flex items-center space-x-2 hover:text-blue-400"><span>⚙️</span><span>Settings</span></a></li>
-        </ul>
-      </nav>
-    </aside>
+  <main class="flex-1 p-4 sm:p-6">
+    <h1 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">All Orders</h1>
 
-    <!-- Main Content -->
-    <main class="flex-1 p-6">
-      <header class="flex justify-between items-center mb-6 relative">
-  <h1 class="text-2xl font-semibold">Welcome to Yash Cyber Cafe</h1>
-
-  <!-- Profile Dropdown -->
-        <div class="relative" id="dropdownContainer">
-          <button type="button" id="dropdownToggle" class="flex items-center space-x-2 focus:outline-none">
-            {% if user.profile_image %}
-              <img src="{{ url_for('static', filename='uploads/' + user.profile_image) }}" alt="Profile" class="w-10 h-10 rounded-full border border-gray-300 object-cover" />
-            {% else %}
-              <img src="/static/images/profile.png" alt="Default" class="w-10 h-10 rounded-full border border-gray-300" />
-            {% endif %}
-            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-
-          <!-- Dropdown content -->
-          <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-lg p-4 z-50">
-            <div class="flex items-center space-x-3 mb-4">
-              {% if user.profile_image %}
-                <img src="{{ url_for('static', filename='uploads/' + user.profile_image) }}" alt="Profile" class="w-10 h-10 rounded-full border border-gray-300 object-cover" />
-              {% else %}
-                <img src="/static/images/profile.png" alt="Default" class="w-10 h-10 rounded-full border border-gray-300" />
+    <div class="overflow-x-auto bg-white rounded-lg shadow p-4">
+      <table class="min-w-full text-sm sm:text-base text-left table-auto">
+        <thead class="border-b bg-gray-100">
+          <tr>
+            <th class="p-2 whitespace-nowrap">Order ID</th>
+            <th class="p-2 whitespace-nowrap">User Name</th>
+            <th class="p-2 whitespace-nowrap">Mobile No</th>
+            <th class="p-2 whitespace-nowrap">Item</th>
+            <th class="p-2 whitespace-nowrap">Quantity</th>
+            <th class="p-2 whitespace-nowrap">Status</th>
+            <th class="p-2 whitespace-nowrap">Address</th>
+            <th class="p-2 whitespace-nowrap">Order Date</th>
+            <th class="p-2 whitespace-nowrap">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in orders %}
+          <tr class="border-b hover:bg-gray-50">
+            <td class="p-2 whitespace-nowrap">{{ order.id }}</td>
+            <td class="p-2 whitespace-nowrap">{{ order.user_name }}</td>
+            <td class="p-2 whitespace-nowrap">{{ order.user_contact }}</td>
+            <td class="p-2 whitespace-nowrap">{{ order.item_name }}</td>
+            <td class="p-2 whitespace-nowrap">{{ order.quantity }}</td>
+            <td class="p-2 whitespace-nowrap capitalize">
+              <span class="
+                {% if order.status == 'pending' %}text-yellow-600
+                {% elif order.status == 'accepted' %}text-green-600
+                {% elif order.status == 'cancelled' %}text-red-600
+                {% else %}text-gray-600
+                {% endif %}
+              ">
+                {{ order.status }}
+              </span>
+            </td>
+            <td class="p-2 whitespace-nowrap text-sm sm:text-base">
+              {{ order.address1 }}
+              {% if order.address2 %}, {{ order.address2 }}{% endif %}, {{ order.city }}, {{ order.pincode }}
+            </td>
+            <td class="p-2 whitespace-nowrap">{{ order.order_date }}</td>
+            <td class="p-2 relative whitespace-nowrap" x-data="{ showMenu: false }">
+              {% if order.status == 'pending' %}
+              <form method="POST" action="{{ url_for('accept_order', order_id=order.id) }}" class="inline">
+                <button type="submit" class="text-green-600 hover:underline mr-2">Accept</button>
+              </form>
               {% endif %}
-              <div>
-                <div class="font-semibold text-gray-900">{{ user.name }}</div>
-                <div class="text-sm text-gray-500">{{ user.email }}</div>
+              {% if order.status in ['pending', 'accepted'] %}
+              <form method="POST" action="{{ url_for('cancel_order', order_id=order.id) }}" class="inline">
+                <button type="submit" class="text-red-600 hover:underline mr-2">Cancel</button>
+              </form>
+              {% endif %}
+
+              <button @click="showMenu = !showMenu" class="text-gray-600 hover:text-gray-900 font-bold">⋮</button>
+              <div x-show="showMenu" @click.away="showMenu = false" class="absolute bg-white border rounded shadow-md right-0 mt-2 w-32 z-10">
+                <form method="POST" action="{{ url_for('delete_order', order_id=order.id) }}">
+                  <button type="submit" class="block w-full text-left px-4 py-2 hover:bg-red-600 hover:text-white text-red-600">Delete Order</button>
+                </form>
               </div>
-            </div>
-
-            <div class="border-t border-gray-200 pt-2 flex justify-between">
-              <!-- Account -->
-              <a href="/account" class="flex items-center px-2 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded space-x-2 w-1/2">
-                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A4 4 0 016.343 16H9a4 4 0 004-4V8a4 4 0 00-4-4H6.343a4 4 0 00-1.222.196M15 12h6" />
-                </svg>
-                <span>Account</span>
-              </a>
-              <!-- Sign out -->
-              <a href="/logout" class="flex items-center justify-end px-2 py-2 text-sm text-red-600 hover:bg-red-50 rounded space-x-2 w-1/2">
-                <span>Sign out</span>
-                <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 11-4 0v-1m0-8V7a2 2 0 114 0v1" />
-                </svg>
-              </a>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <!-- Booking page content -->
-      <section>
-        <p class="text-gray-700">This is the booking page content.</p>
-      </section>
-    </main>
-  </div>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="9" class="text-center p-4 text-gray-500">No orders found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </main>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const toggleBtn = document.getElementById('dropdownToggle');
-      const dropdown = document.getElementById('profileDropdown');
-      const container = document.getElementById('dropdownContainer');
-
-      toggleBtn.addEventListener('click', function (e) {
-        e.stopPropagation();
-        dropdown.classList.toggle('hidden');
-      });
-
-      document.addEventListener('click', function (e) {
-        if (!container.contains(e.target)) {
-          dropdown.classList.add('hidden');
-        }
-      });
-    });
+    function ordersApp() {
+      return {
+        // Add any future interactivity here
+      }
+    }
   </script>
 </body>
 </html>

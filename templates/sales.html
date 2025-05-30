@@ -1,113 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sales - {{ short_name }}</title>
+  <title>Home - {{ short_name }}</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 font-sans">
 
   <div class="flex" id="mainContent">
-    <!-- Sidebar -->
-    <aside class="w-64 bg-gray-900 text-white min-h-screen">
-      <div class="p-4 font-bold text-xl border-b border-gray-700">YCC</div>
-      <div class="p-4 border-b border-gray-700">Welcome {{ short_name }}</div>
-      <nav class="text-sm">
-        <ul class="space-y-2 p-4">
-          <li class="text-gray-400 uppercase text-xs">Dashboard</li>
-          <li><a href="/home" class="flex items-center space-x-2 hover:text-blue-400"><span>🏠</span><span>Home</span></a></li>
-  {% if user.role == 'admin' %}
-          <li><a href="/Orders" class="flex items-center space-x-2 hover:text-blue-400"><span>📅</span><span>Orders</span></a></li>
-          <li><a href="/sales" class="flex items-center space-x-2 text-gray-300 bg-gray-800 rounded px-2 py-1"><span>💰</span><span>Sales</span></a></li>
-          <li><a href="/catalog" class="flex items-center space-x-2 hover:text-blue-400"><span>📚</span><span>Catalog</span></a></li>
-          <li><a href="/inbox" class="flex items-center space-x-2 hover:text-blue-400"><span>📬</span><span>Inbox</span></a></li>
-  {% endif %}
-  {% if user.role == 'user' %}
-          <li><a href="/My_Orders" class="flex items-center space-x-2 hover:text-blue-400"><span>📅</span><span>My Orders</span></a></li>
-          <li><a href="/Contact" class="flex items-center space-x-2 hover:text-blue-400"><span>📬</span><span>Contact us</span></a></li>
-  {% endif %}
-          <li><a href="/settings" class="flex items-center space-x-2 hover:text-blue-400"><span>⚙️</span><span>Settings</span></a></li>
-        </ul>
-      </nav>
-    </aside>
+
+    <!-- Include Sidebar -->
+    {% include 'sidebar.html' %}
 
     <!-- Main Content -->
     <main class="flex-1 p-6">
-      <header class="flex justify-between items-center mb-6 relative">
-  <h1 class="text-2xl font-semibold">Welcome to Yash Cyber Cafe</h1>
-
-  <!-- Profile Dropdown -->
-        <div class="relative" id="dropdownContainer">
-          <button type="button" id="dropdownToggle" class="flex items-center space-x-2 focus:outline-none">
-            {% if user.profile_image %}
-              <img src="{{ url_for('static', filename='uploads/' + user.profile_image) }}" alt="Profile" class="w-10 h-10 rounded-full border border-gray-300 object-cover" />
-            {% else %}
-              <img src="/static/images/profile.png" alt="Default" class="w-10 h-10 rounded-full border border-gray-300" />
-            {% endif %}
-            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-
-          <!-- Dropdown content -->
-          <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-lg p-4 z-50">
-            <div class="flex items-center space-x-3 mb-4">
-              {% if user.profile_image %}
-                <img src="{{ url_for('static', filename='uploads/' + user.profile_image) }}" alt="Profile" class="w-10 h-10 rounded-full border border-gray-300 object-cover" />
-              {% else %}
-                <img src="/static/images/profile.png" alt="Default" class="w-10 h-10 rounded-full border border-gray-300" />
-              {% endif %}
-              <div>
-                <div class="font-semibold text-gray-900">{{ user.name }}</div>
-                <div class="text-sm text-gray-500">{{ user.email }}</div>
-              </div>
-            </div>
-
-            <div class="border-t border-gray-200 pt-2 flex justify-between">
-              <!-- Account -->
-              <a href="/account" class="flex items-center px-2 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded space-x-2 w-1/2">
-                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A4 4 0 016.343 16H9a4 4 0 004-4V8a4 4 0 00-4-4H6.343a4 4 0 00-1.222.196M15 12h6" />
-                </svg>
-                <span>Account</span>
-              </a>
-              <!-- Sign out -->
-              <a href="/logout" class="flex items-center justify-end px-2 py-2 text-sm text-red-600 hover:bg-red-50 rounded space-x-2 w-1/2">
-                <span>Sign out</span>
-                <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 11-4 0v-1m0-8V7a2 2 0 114 0v1" />
-                </svg>
-              </a>
-            </div>
-          </div>
-        </div>
+      <header class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-semibold">Welcome to Yash Cyber Cafe</h1>
       </header>
 
-      <!-- Booking page content -->
-      <section>
-        <p class="text-gray-700">This is the sales page content.</p>
-      </section>
+      <div class="bg-white p-4 rounded shadow mb-6">
+        <h2 class="font-semibold mb-2">Analytics</h2>
+        <div class="flex space-x-4">
+          <div>
+            <div class="text-sm text-gray-500">Site sessions</div>
+            <div class="text-lg">-</div>
+          </div>
+          <div>
+            <div class="text-sm text-gray-500">Total sales</div>
+            <div class="text-lg">-</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex space-x-4">
+        <div class="bg-white p-4 rounded shadow w-2/3">
+          <h2 class="font-semibold mb-2">Activity Feed</h2>
+          <p class="text-sm text-gray-500 mb-4">No recent activity</p>
+        </div>
+        <div class="bg-white p-4 rounded shadow w-1/3">
+          <h2 class="font-semibold mb-2">Suggested for you</h2>
+          <p class="text-sm mb-4">Set up local delivery options</p>
+        </div>
+      </div>
     </main>
   </div>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const toggleBtn = document.getElementById('dropdownToggle');
-      const dropdown = document.getElementById('profileDropdown');
-      const container = document.getElementById('dropdownContainer');
-
-      toggleBtn.addEventListener('click', function (e) {
-        e.stopPropagation();
-        dropdown.classList.toggle('hidden');
-      });
-
-      document.addEventListener('click', function (e) {
-        if (!container.contains(e.target)) {
-          dropdown.classList.add('hidden');
-        }
-      });
-    });
-  </script>
 </body>
 </html>

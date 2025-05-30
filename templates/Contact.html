@@ -1,164 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>inbox - {{ short_name }}</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contact Us - {{ short_name }}</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 font-sans">
+  <div class="flex flex-col md:flex-row min-h-screen">
+    {% include 'sidebar.html' %}
 
-  <div class="flex" id="mainContent">
-    <!-- Sidebar -->
-    <aside class="w-64 bg-gray-900 text-white min-h-screen">
-      <div class="p-4 font-bold text-xl border-b border-gray-700">YCC</div>
-      <div class="p-4 border-b border-gray-700">Welcome {{ short_name }}</div>
-      <nav class="text-sm">
-        <ul class="space-y-2 p-4">
-          <li class="text-gray-400 uppercase text-xs">Dashboard</li>
-          <li><a href="/home" class="flex items-center space-x-2 hover:text-blue-400"><span>🏠</span><span>Home</span></a></li>
-  {% if user.role == 'admin' %}
-          <li><a href="/Orders" class="flex items-center space-x-2 hover:text-blue-400"><span>📅</span><span>Orders</span></a></li>
-          <li><a href="/sales" class="flex items-center space-x-2 hover:text-blue-400"><span>💰</span><span>Sales</span></a></li>
-          <li><a href="/catalog" class="flex items-center space-x-2 hover:text-blue-400"><span>📚</span><span>Catalog</span></a></li>
-          <li><a href="/inbox" class="flex items-center space-x-2 text-gray-300 bg-gray-800 rounded px-2 py-1"><span>📬</span><span>Inbox</span></a></li>
-  {% endif %}
-  {% if user.role == 'user' %}
-          <li><a href="/My_Orders" class="flex items-center space-x-2 hover:text-blue-400"><span>📅</span><span>My Orders</span></a></li>
-          <li><a href="/Contact" class="flex items-center space-x-2 text-gray-300 bg-gray-800 rounded px-2 py-1"><span>📬</span><span>Contact us</span></a></li>
-  {% endif %}
-          <li><a href="/settings" class="flex items-center space-x-2 hover:text-blue-400"><span>⚙️</span><span>Settings</span></a></li>
-        </ul>
-      </nav>
-    </aside>
+    <main class="flex-1 p-4 sm:p-6">
+      <h1 class="text-xl sm:text-2xl md:text-3xl font-semibold mb-4 sm:mb-6">
+        Welcome to Yash Cyber Cafe
+      </h1>
 
-    <!-- Main Content -->
-    <main class="flex-1 p-6">
-      <header class="flex justify-between items-center mb-6 relative">
-  <h1 class="text-2xl font-semibold">Welcome to Yash Cyber Cafe</h1>
+      <section class="flex flex-col sm:flex-row sm:items-center gap-4">
+        <button id="openChatBtn"
+          class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm sm:text-base flex items-center justify-center gap-2 w-full sm:w-auto">
+          <span>💬 Chat with Us</span>
+        </button>
 
-  <!-- Profile Dropdown -->
-        <div class="relative" id="dropdownContainer">
-          <button type="button" id="dropdownToggle" class="flex items-center space-x-2 focus:outline-none">
-            {% if user.profile_image %}
-              <img src="{{ url_for('static', filename='uploads/' + user.profile_image) }}" alt="Profile" class="w-10 h-10 rounded-full border border-gray-300 object-cover" />
-            {% else %}
-              <img src="/static/images/profile.png" alt="Default" class="w-10 h-10 rounded-full border border-gray-300" />
-            {% endif %}
-            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
+        <a href="tel:+917987190554"
+          class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-sm sm:text-base flex items-center justify-center gap-2 w-full sm:w-auto">
+          <span>📞 Call Us</span>
+        </a>
+      </section>
+    </main>
+  </div>
 
-          <!-- Dropdown content -->
-          <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-lg p-4 z-50">
-            <div class="flex items-center space-x-3 mb-4">
-              {% if user.profile_image %}
-                <img src="{{ url_for('static', filename='uploads/' + user.profile_image) }}" alt="Profile" class="w-10 h-10 rounded-full border border-gray-300 object-cover" />
-              {% else %}
-                <img src="/static/images/profile.png" alt="Default" class="w-10 h-10 rounded-full border border-gray-300" />
-              {% endif %}
-              <div>
-                <div class="font-semibold text-gray-900">{{ user.name }}</div>
-                <div class="text-sm text-gray-500">{{ user.email }}</div>
-              </div>
-            </div>
-
-            <div class="border-t border-gray-200 pt-2 flex justify-between">
-              <!-- Account -->
-              <a href="/account" class="flex items-center px-2 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded space-x-2 w-1/2">
-                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A4 4 0 016.343 16H9a4 4 0 004-4V8a4 4 0 00-4-4H6.343a4 4 0 00-1.222.196M15 12h6" />
-                </svg>
-                <span>Account</span>
-              </a>
-              <!-- Sign out -->
-              <a href="/logout" class="flex items-center justify-end px-2 py-2 text-sm text-red-600 hover:bg-red-50 rounded space-x-2 w-1/2">
-                <span>Sign out</span>
-                <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 11-4 0v-1m0-8V7a2 2 0 114 0v1" />
-                </svg>
-              </a>
-            </div>
-          </div>
+  <!-- Chat Modal -->
+  <div id="chatModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden px-2" aria-modal="true" role="dialog">
+    <div class="bg-white w-full max-w-md rounded-xl shadow-lg flex flex-col max-h-[90vh]">
+      <div class="flex items-center justify-between bg-blue-600 text-white px-4 py-3">
+        <div class="flex items-center space-x-3">
+          <img src="/static/images/login-icon.png" alt="Admin Profile" class="w-8 h-8 rounded-full object-cover" />
+          <span class="font-semibold text-sm sm:text-base">Yash Cyber Cafe</span>
         </div>
-      </header>
- <!-- Contact us page content -->
-<section class="p-6">
-  <h2 class="text-2xl font-semibold text-gray-800 mb-4">Contact Us</h2>
-
-  <div class="space-y-4">
-    <button id="openChatBtn" class="block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-max">
-      💬 Chat with Us
-    </button>
-
-    <a href="tel:+911234567890" class="block bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 w-max">
-      📞 Call Us
-    </a>
-  </div>
-</section>
-
-<!-- Chat Modal -->
-<div id="chatModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-  <div class="bg-white w-full max-w-md rounded-xl shadow-lg overflow-hidden">
-    <!-- Header -->
-    <div class="flex items-center justify-between bg-blue-600 text-white px-4 py-3">
-      <div class="flex items-center space-x-2">
-        <img src="/static/images/login-icon.png" alt="Admin" class="w-8 h-8 rounded-full border border-white object-cover" />
-        <span class="font-semibold">Yash Cyber Cafe</span>
+        <div class="flex items-center space-x-2 sm:space-x-3">
+          <button id="clearChatBtn" title="Clear Chat"
+            class="text-white hover:text-gray-300 text-xs sm:text-sm font-semibold px-2 sm:px-3 py-1 border border-white rounded">
+            Clear
+          </button>
+          <button id="closeChatBtn" class="text-xl font-bold">&times;</button>
+        </div>
       </div>
-      <button onclick="closeChat()" class="text-white text-xl font-bold">&times;</button>
+      <div id="chatMessages" class="flex-1 overflow-y-auto p-3 space-y-2 bg-gray-50 text-sm">
+        <div class="text-gray-500 text-center">Start your conversation...</div>
+      </div>
+      <form id="chatForm" class="flex border-t border-gray-300 p-3">
+        <input id="chatInput" type="text" placeholder="Type your message..."
+          class="flex-1 border border-gray-300 rounded-l px-3 py-2 focus:outline-none text-sm" autocomplete="off" required />
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 rounded-r text-sm">Send</button>
+      </form>
     </div>
-
-    <!-- Chat Messages -->
-    <div class="h-64 overflow-y-auto p-4 space-y-2 bg-gray-50 text-sm" id="chatMessages">
-      <div class="text-gray-500 text-center">Start your conversation...</div>
-    </div>
-
-    <!-- Message Input -->
-    <form onsubmit="sendMessage(event)" class="flex border-t border-gray-300 p-3">
-      <input type="text" id="chatInput" placeholder="Type your message..." class="flex-1 border border-gray-300 rounded-l px-3 py-2 focus:outline-none" required />
-      <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 rounded-r">Send</button>
-    </form>
   </div>
-</div>
 
-<script>
-  const chatModal = document.getElementById("chatModal");
-  const openChatBtn = document.getElementById("openChatBtn");
-  const chatMessages = document.getElementById("chatMessages");
-  const chatInput = document.getElementById("chatInput");
+  <script>
+    const openChatBtn = document.getElementById("openChatBtn");
+    const closeChatBtn = document.getElementById("closeChatBtn");
+    const clearChatBtn = document.getElementById("clearChatBtn");
+    const chatModal = document.getElementById("chatModal");
+    const chatMessages = document.getElementById("chatMessages");
+    const chatInput = document.getElementById("chatInput");
+    const chatForm = document.getElementById("chatForm");
 
-  openChatBtn.addEventListener("click", () => {
-    chatModal.classList.remove("hidden");
-  });
+    const currentUserEmail = "{{ user.email }}";
+    const adminEmail = "admin@example.co";  // Your admin email
 
-  function closeChat() {
-    chatModal.classList.add("hidden");
-  }
+    async function loadMessages() {
+      chatMessages.innerHTML = "Loading...";
+      try {
+        const res = await fetch(`/api/messages/${adminEmail}`);
+        if (!res.ok) throw new Error('Failed to load messages');
+        const messages = await res.json();
+        chatMessages.innerHTML = "";
 
-  function sendMessage(event) {
-    event.preventDefault();
-    const msg = chatInput.value.trim();
-    if (!msg) return;
+        if (messages.length === 0) {
+          chatMessages.innerHTML = '<div class="text-gray-500 text-center">Start your conversation...</div>';
+          return;
+        }
 
-    // Append user message to chat
-    const userMsg = document.createElement("div");
-    userMsg.className = "text-right text-blue-700";
-    userMsg.textContent = msg;
-    chatMessages.appendChild(userMsg);
+        messages.forEach(msg => {
+          const div = document.createElement("div");
+          div.className = (msg.sender_email === currentUserEmail)
+            ? "text-right text-blue-700 bg-blue-100 p-2 rounded max-w-xs ml-auto"
+            : "text-left text-gray-700 bg-gray-200 p-2 rounded max-w-xs mr-auto";
+          div.textContent = msg.message;
+          chatMessages.appendChild(div);
+        });
 
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-    chatInput.value = "";
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      } catch (err) {
+        chatMessages.innerHTML = '<div class="text-red-500 text-center">Error loading messages.</div>';
+        console.error(err);
+      }
+    }
 
-    // Simulated admin response (optional)
-    setTimeout(() => {
-      const adminMsg = document.createElement("div");
-      adminMsg.className = "text-left text-gray-700";
-      adminMsg.textContent = "Thanks for reaching out!";
-      chatMessages.appendChild(adminMsg);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    }, 800);
-  }
-</script>
+    async function sendMessage(e) {
+      e.preventDefault();
+      const msg = chatInput.value.trim();
+      if (!msg) return;
 
+      try {
+        const res = await fetch(`/api/messages/${adminEmail}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: msg })
+        });
+        if (!res.ok) throw new Error("Failed to send message");
+
+        chatInput.value = "";
+        loadMessages();
+      } catch (err) {
+        alert("Error sending message.");
+        console.error(err);
+      }
+    }
+
+    function clearChat() {
+      if (!confirm("Are you sure you want to clear the chat window? This will only clear your view.")) return;
+      chatMessages.innerHTML = '<div class="text-gray-500 text-center">Chat cleared locally.</div>';
+      chatInput.value = "";
+    }
+
+    openChatBtn.addEventListener("click", () => {
+      chatModal.classList.remove("hidden");
+      loadMessages();
+    });
+
+    closeChatBtn.addEventListener("click", () => {
+      chatModal.classList.add("hidden");
+    });
+
+    clearChatBtn.addEventListener("click", clearChat);
+    chatForm.addEventListener("submit", sendMessage);
+  </script>
+</body>
+</html>

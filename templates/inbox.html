@@ -1,170 +1,171 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>inbox - {{ short_name }}</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 font-sans">
-
-  <div class="flex" id="mainContent">
-    <!-- Sidebar -->
-    <aside class="w-64 bg-gray-900 text-white min-h-screen">
-      <div class="p-4 font-bold text-xl border-b border-gray-700">YCC</div>
-      <div class="p-4 border-b border-gray-700">Welcome {{ short_name }}</div>
-      <nav class="text-sm">
-        <ul class="space-y-2 p-4">
-          <li class="text-gray-400 uppercase text-xs">Dashboard</li>
-           <li><a href="/home" class="flex items-center space-x-2 hover:text-blue-400"><span>🏠</span><span>Home</span></a></li>
-  {% if user.role == 'admin' %}
-          <li><a href="/Orders" class="flex items-center space-x-2 hover:text-blue-400"><span>📅</span><span>Orders</span></a></li>
-          <li><a href="/sales" class="flex items-center space-x-2 hover:text-blue-400"><span>💰</span><span>Sales</span></a></li>
-          <li><a href="/catalog" class="flex items-center space-x-2 hover:text-blue-400"><span>📚</span><span>Catalog</span></a></li>
-          <li><a href="/inbox" class="flex items-center space-x-2 text-gray-300 bg-gray-800 rounded px-2 py-1"><span>📬</span><span>Inbox</span></a></li>
-  {% endif %}
-  {% if user.role == 'user' %}
-          <li><a href="/My_Orders" class="flex items-center space-x-2 hover:text-blue-400"><span>📅</span><span>My Orders</span></a></li>
-          <li><a href="/Contact" class="flex items-center space-x-2 hover:text-blue-400"><span>📬</span><span>Contact us</span></a></li>
-  {% endif %}
-          <li><a href="/settings" class="flex items-center space-x-2 hover:text-blue-400"><span>⚙️</span><span>Settings</span></a></li>
-        </ul>
-      </nav>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="flex-1 p-6">
-      <header class="flex justify-between items-center mb-6 relative">
-  <h1 class="text-2xl font-semibold">Welcome to Yash Cyber Cafe</h1>
-
-  <!-- Profile Dropdown -->
-        <div class="relative" id="dropdownContainer">
-          <button type="button" id="dropdownToggle" class="flex items-center space-x-2 focus:outline-none">
-            {% if user.profile_image %}
-              <img src="{{ url_for('static', filename='uploads/' + user.profile_image) }}" alt="Profile" class="w-10 h-10 rounded-full border border-gray-300 object-cover" />
-            {% else %}
-              <img src="/static/images/profile.png" alt="Default" class="w-10 h-10 rounded-full border border-gray-300" />
-            {% endif %}
-            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-
-          <!-- Dropdown content -->
-          <div id="profileDropdown" class="hidden absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-lg p-4 z-50">
-            <div class="flex items-center space-x-3 mb-4">
-              {% if user.profile_image %}
-                <img src="{{ url_for('static', filename='uploads/' + user.profile_image) }}" alt="Profile" class="w-10 h-10 rounded-full border border-gray-300 object-cover" />
-              {% else %}
-                <img src="/static/images/profile.png" alt="Default" class="w-10 h-10 rounded-full border border-gray-300" />
-              {% endif %}
-              <div>
-                <div class="font-semibold text-gray-900">{{ user.name }}</div>
-                <div class="text-sm text-gray-500">{{ user.email }}</div>
-              </div>
-            </div>
-
-            <div class="border-t border-gray-200 pt-2 flex justify-between">
-              <!-- Account -->
-              <a href="/account" class="flex items-center px-2 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded space-x-2 w-1/2">
-                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A4 4 0 016.343 16H9a4 4 0 004-4V8a4 4 0 00-4-4H6.343a4 4 0 00-1.222.196M15 12h6" />
-                </svg>
-                <span>Account</span>
-              </a>
-              <!-- Sign out -->
-              <a href="/logout" class="flex items-center justify-end px-2 py-2 text-sm text-red-600 hover:bg-red-50 rounded space-x-2 w-1/2">
-                <span>Sign out</span>
-                <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 11-4 0v-1m0-8V7a2 2 0 114 0v1" />
-                </svg>
-              </a>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <!-- inbox.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Inbox - {{ short_name }}</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/alpinejs" defer></script>
 </head>
-<body class="bg-gray-100 font-sans">
-  <div class="flex">
-    <!-- Sidebar -->
+<body class="bg-gray-100 font-sans" x-data="inboxApp()">
+  <div class="flex flex-col md:flex-row min-h-screen">
     {% include 'sidebar.html' %}
 
-    <!-- Main Content -->
-    <main class="flex-1 flex">
-      <!-- User List -->
-      <aside class="w-1/3 bg-white border-r overflow-y-auto">
-        <h2 class="text-xl font-bold p-4 border-b">Inbox</h2>
-        <ul>
-          {% for contact in contacts %}
-            <li class="hover:bg-gray-100 cursor-pointer p-4 border-b flex justify-between items-center">
-              <div class="flex items-center space-x-3">
-                <img src="{{ url_for('static', filename='uploads/' + (contact.user_image or 'default.png')) }}"
-                  class="w-10 h-10 rounded-full border object-cover" />
-                <div>
-                  <div class="font-semibold">{{ contact.user_name }}</div>
-                  <div class="text-sm text-gray-500 truncate w-40">{{ contact.last_message }}</div>
-                  <div class="text-xs text-gray-400">{{ contact.timestamp }}</div>
-                </div>
+    <main class="flex-1 p-4 sm:p-6 overflow-auto">
+      <header class="mb-4 sm:mb-6">
+        <h1 class="text-xl sm:text-2xl font-semibold">Inbox - {{ user.name }}</h1>
+      </header>
+
+      <section class="bg-white p-4 sm:p-6 rounded shadow w-full max-w-3xl mx-auto">
+        <h2 class="text-lg font-semibold mb-4">Users Who Sent Messages</h2>
+        <div class="flex flex-col gap-3">
+          {% for u in user_list %}
+          <div class="flex justify-between items-center bg-blue-600 text-white rounded hover:bg-blue-700">
+            <button
+              class="flex-1 text-left px-4 py-2 truncate"
+              @click="openChat('{{ u.email }}', '{{ u.name }}')"
+            >
+              <div class="font-semibold flex items-center">
+                {{ u.name }}
+                {% if u.has_unread %}
+                <span class="ml-2 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                {% endif %}
               </div>
-              <button onclick="openChatPopup()" class="text-sm text-blue-600 underline">Popup</button>
-            </li>
+              <div class="text-sm truncate">{{ u.email }}</div>
+            </button>
+            <button
+              class="px-3 py-2 hover:bg-red-600 rounded-r"
+              @click="deleteUserChat('{{ u.email }}')"
+              title="Delete Chat"
+            >
+              🗑️
+            </button>
+          </div>
           {% endfor %}
-        </ul>
-      </aside>
-
-      <!-- Chat Section -->
-      <section class="flex-1 flex flex-col">
-        {% if active_user %}
-          <div class="bg-blue-600 text-white px-4 py-3 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-              <img src="{{ url_for('static', filename='uploads/' + (active_user.user_image or 'default.png')) }}"
-                class="w-10 h-10 rounded-full border object-cover" />
-              <div>
-                <div class="font-semibold">{{ active_user.user_name }}</div>
-                <div class="text-sm text-white text-opacity-70">{{ active_user.email }}</div>
-              </div>
-            </div>
-            <!-- Delete Chat Button -->
-            <form method="POST" action="{{ url_for('delete_chat', email=active_user.email) }}"
-                  onsubmit="return confirm('Are you sure you want to delete this chat?');">
-              <button type="submit" class="text-sm text-red-400 underline">🗑 Delete Chat</button>
-            </form>
-          </div>
-
-          <div class="flex-1 overflow-y-auto p-4 space-y-2 bg-gray-50">
-            {% for msg in messages %}
-              <div class="flex {% if msg.sender == 'admin' %}justify-end{% else %}justify-start{% endif %}">
-                <div class="{% if msg.sender == 'admin' %}bg-blue-500 text-white{% else %}bg-gray-200{% endif %} px-4 py-2 rounded-lg max-w-xs">
-                  {{ msg.message }}
-                  <div class="text-xs text-right mt-1 opacity-60">{{ msg.timestamp }}</div>
-                </div>
-              </div>
-            {% endfor %}
-          </div>
-
-          <form method="POST" action="{{ url_for('send_message', email=active_user.email) }}" class="flex border-t bg-white p-3">
-            <input type="text" name="message" placeholder="Type a message..." required
-              class="flex-1 border border-gray-300 rounded-l px-3 py-2 focus:outline-none" />
-            <button type="submit" class="bg-blue-600 text-white px-4 rounded-r hover:bg-blue-700">Send</button>
-          </form>
-        {% else %}
-          <div class="flex-1 flex items-center justify-center text-gray-400">
-            Select a user to start chatting
-          </div>
-        {% endif %}
+        </div>
       </section>
     </main>
   </div>
 
-  <!-- Chat Modal Include -->
-  {% include 'chat_modal.html' %}
+  <!-- Chat Modal -->
+  <div
+    x-show="showChat"
+    x-cloak
+    class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 p-4"
+  >
+    <div class="bg-white rounded-lg w-full max-w-lg p-4 sm:p-6 shadow relative flex flex-col max-h-[90vh] overflow-y-auto">
+      <!-- Modal Header -->
+      <div class="flex justify-between items-center mb-2">
+        <h3 class="text-lg sm:text-xl font-semibold">Chat with <span x-text="currentName"></span></h3>
+        <div class="flex items-center space-x-3 relative" x-data="{ open: false }">
+          <button
+            @click="open = !open"
+            class="text-sm text-red-600 hover:underline"
+            title="Clear Chat Options"
+          >🧹</button>
+          <div
+            x-show="open"
+            @click.away="open = false"
+            class="absolute right-0 top-6 bg-white border rounded shadow w-40 z-10"
+          >
+            <button @click="clearChat('me')" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Clear for Me</button>
+            <button @click="clearChat('both')" class="block w-full text-left px-4 py-2 hover:bg-gray-100">Clear for Both</button>
+          </div>
+          <button
+            class="text-sm text-gray-600 hover:text-black"
+            @click="showChat = false"
+            title="Close"
+          >✖</button>
+        </div>
+      </div>
+
+      <!-- Chat Area -->
+      <div class="border p-3 h-64 sm:h-80 overflow-y-auto space-y-2 mb-3 bg-gray-50 rounded" id="chatMessages"></div>
+
+      <!-- Message Form -->
+      <form @submit.prevent="sendMessage" class="flex mt-2 gap-2">
+        <input
+          x-ref="input"
+          type="text"
+          x-model="newMessage"
+          placeholder="Type your message..."
+          class="flex-1 border rounded px-3 py-2"
+          required
+        />
+        <button class="bg-blue-600 text-white px-4 rounded hover:bg-blue-700">Send</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Alpine Script -->
+  <script>
+    function inboxApp() {
+      return {
+        showChat: false,
+        currentEmail: '',
+        currentName: '',
+        newMessage: '',
+        messages: [],
+
+        async openChat(email, name) {
+          this.currentEmail = email;
+          this.currentName = name;
+          this.showChat = true;
+          this.newMessage = '';
+          await this.loadMessages();
+          this.$nextTick(() => this.$refs.input.focus());
+        },
+
+        async loadMessages() {
+          const res = await fetch(`/api/messages/${this.currentEmail}`);
+          this.messages = await res.json();
+          const container = document.getElementById('chatMessages');
+          container.innerHTML = '';
+
+          if (!this.messages.length) {
+            container.innerHTML = '<div class="text-gray-500 text-center">No messages yet.</div>';
+          } else {
+            this.messages.forEach(msg => {
+              const div = document.createElement('div');
+              const isSentByAdmin = msg.sender_email === '{{ user.email }}';
+              div.className = isSentByAdmin
+                ? "text-right text-blue-700 bg-blue-100 p-2 rounded max-w-xs ml-auto"
+                : "text-left text-gray-700 bg-gray-200 p-2 rounded max-w-xs mr-auto";
+              div.textContent = msg.message;
+              container.appendChild(div);
+            });
+          }
+
+          container.scrollTop = container.scrollHeight;
+        },
+
+        async sendMessage() {
+          if (!this.newMessage.trim()) return;
+
+          await fetch(`/api/messages/${this.currentEmail}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: this.newMessage })
+          });
+
+          this.newMessage = '';
+          await this.loadMessages();
+        },
+
+        async clearChat() {
+          if (!confirm('Clear chat history with this user?')) return;
+
+          await fetch(`/api/messages/${this.currentEmail}`, { method: 'DELETE' });
+          await this.loadMessages();
+        },
+
+        async deleteUserChat(email) {
+          if (!confirm('Are you sure you want to delete this entire chat?')) return;
+          await fetch(`/api/messages/${email}`, { method: 'DELETE' });
+          alert("Chat deleted.");
+        }
+      };
+    }
+  </script>
 </body>
 </html>
