@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" x-data="myOrdersApp()" xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en" x-data="myOrdersApp()">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -7,10 +7,13 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/alpinejs" defer></script>
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col md:flex-row" x-data="{ showQR: false, qrImage: '' }">
+<body class="bg-gray-100 min-h-screen flex flex-col md:flex-row">
   {% include 'sidebar.html' %}
 
-  <main class="flex-1 p-4 sm:p-6">
+  <!-- Hidden UPI link element -->
+  <a id="upi-link" href="upi://pay?pa=7987190554@ibl&pn=Yashwant%20Kumar%20Sahu&mc=0000&mode=02&purpose=00" class="hidden">Pay</a>
+
+  <main class="flex-1 p-4 sm:p-6" x-data="myOrdersApp()">
     <h1 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">My Orders</h1>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -65,11 +68,7 @@
                 <form method="POST" action="{{ url_for('cancel_order', order_id=order.id) }}">
                   <button type="submit" class="text-red-600 hover:underline">Cancel</button>
                 </form>
-                <button 
-                  @click="handlePayment('{{ order.id }}')" 
-                  class="text-blue-600 hover:underline block">
-                  Pay
-                </button>
+                <button @click="handlePayment({{ order.id }})" class="text-blue-600 hover:underline">Pay</button>
               {% elif order.status == 'accepted' %}
                 <span class="text-green-600 font-semibold">Paid</span>
               {% else %}
@@ -85,23 +84,16 @@
         </tbody>
       </table>
     </div>
-  </main>
 
-  <!-- QR Modal -->
-  <div
-    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-    x-show="showQR"
-    style="display: none"
-    @click.away="showQR = false"
-  >
-    <div class="bg-white rounded-lg shadow-lg p-4 w-80">
-      <h2 class="text-xl font-bold mb-2">Scan to Pay</h2>
-      <img :src="qrImage" alt="QR Code" class="w-full h-auto rounded border" />
-      <button @click="showQR = false" class="mt-4 w-full bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded">
-        Close
-      </button>
+    <!-- QR Code Popup -->
+    <div x-show="showQR" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+      <div class="bg-white p-4 rounded-lg shadow-md w-80">
+        <h2 class="text-xl font-bold mb-2">Scan to Pay</h2>
+        <img :src="qrImage" alt="UPI QR Code" class="w-full rounded mb-4" />
+        <button @click="showQR = false" class="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700">Close</button>
+      </div>
     </div>
-  </div>
+  </main>
 
   <script>
     function myOrdersApp() {
@@ -110,8 +102,8 @@
         qrImage: '',
         handlePayment(orderId) {
           const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
-          const upiLink = "upi://pay?pa=7987190554@ibl&pn=Yashwant%20Kumar%20Sahu&mc=0000&mode=02&purpose=00";
-          const qrImageUrl = `/static/qrcodes/pay.jpg`; // Adjust path if needed
+          const upiLink = document.querySelector('#upi-link').getAttribute('href');
+          const qrImageUrl = "/static/qrcodes/pay.jpg"; // Replace with your QR image path
 
           if (isMobile) {
             window.location.href = upiLink;
@@ -120,7 +112,7 @@
             this.showQR = true;
           }
         }
-      }
+      };
     }
   </script>
 </body>
