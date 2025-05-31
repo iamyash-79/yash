@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" x-data="myOrdersApp()" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My Orders - {{ short_name }}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/alpinejs" defer></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col md:flex-row" x-data="{ showQR: false, qrImage: '' }">
+  {% include 'sidebar.html' %}
+
+  <main class="flex-1 p-4 sm:p-6">
+    <h1 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">My Orders</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="mb-4">
+          {% for category, message in messages %}
+            <div class="p-3 rounded text-white 
+                        {% if category == 'success' %}bg-green-600{% elif category == 'error' %}bg-red-600{% else %}bg-blue-600{% endif %}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <div class="overflow-x-auto bg-white rounded-lg shadow p-4">
+      <table class="min-w-full text-sm sm:text-base text-left table-auto">
+        <thead class="border-b bg-gray-100">
+          <tr>
+            <th class="p-2 whitespace-nowrap">Order ID</th>
+            <th class="p-2 whitespace-nowrap">Item</th>
+            <th class="p-2 whitespace-nowrap">Quantity</th>
+            <th class="p-2 whitespace-nowrap">Status</th>
+            <th class="p-2 whitespace-nowrap">Address</th>
+            <th class="p-2 whitespace-nowrap">Order Date</th>
+            <th class="p-2 whitespace-nowrap">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for order in my_orders %}
+          <tr class="border-b hover:bg-gray-50">
+            <td class="p-2 whitespace-nowrap">{{ order.id }}</td>
+            <td class="p-2 whitespace-nowrap">{{ order.item_name }}</td>
+            <td class="p-2 whitespace-nowrap">{{ order.quantity }}</td>
+            <td class="p-2 whitespace-nowrap capitalize">
+              <span
+                :class="{
+                  'text-yellow-600': '{{ order.status }}' == 'pending',
+                  'text-green-600': '{{ order.status }}' == 'accepted',
+                  'text-red-600': '{{ order.status }}' == 'cancelled'
+                }"
+              >
+                {{ order.status }}
+              </span>
+            </td>
+            <td class="p-2 whitespace-nowrap text-sm sm:text-base">
+              {{ order.address1 }}, {{ order.address2 }}, {{ order.city }}, {{ order.pincode }}
+            </td>
+            <td class="p-2 whitespace-nowrap">{{ order.order_date }}</td>
+            <td class="p-2 whitespace-nowrap space-y-1">
+              {% if order.status == 'pending' %}
+                <form method="POST" action="{{ url_for('cancel_order', order_id=order.id) }}">
+                  <button type="submit" class="text-red-600 hover:underline">Cancel</button>
+                </form>
+                <button 
+                  @click="handlePayment('{{ order.id }}')" 
+                  class="text-blue-600 hover:underline block">
+                  Pay
+                </button>
+              {% elif order.status == 'accepted' %}
+                <span class="text-green-600 font-semibold">Paid</span>
+              {% else %}
+                <span class="text-gray-400">No actions</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="7" class="text-center p-4 text-gray-500">No orders found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- QR Modal -->
+  <div
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    x-show="showQR"
+    style="display: none"
+    @click.away="showQR = false"
+  >
+    <div class="bg-white rounded-lg shadow-lg p-4 w-80">
+      <h2 class="text-xl font-bold mb-2">Scan to Pay</h2>
+      <img :src="qrImage" alt="QR Code" class="w-full h-auto rounded border" />
+      <button @click="showQR = false" class="mt-4 w-full bg-gray-200 hover:bg-gray-300 text-gray-800 py-1 rounded">
+        Close
+      </button>
+    </div>
+  </div>
+
+  <script>
+    function myOrdersApp() {
+      return {
+        showQR: false,
+        qrImage: '',
+        handlePayment(orderId) {
+          const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+          const upiLink = "upi://pay?pa=7987190554@ibl&pn=Yashwant%20Kumar%20Sahu&mc=0000&mode=02&purpose=00";
+          const qrImageUrl = `/static/qrcodes/pay.jpg`; // Adjust path if needed
+
+          if (isMobile) {
+            window.location.href = upiLink;
+          } else {
+            this.qrImage = qrImageUrl;
+            this.showQR = true;
+          }
+        }
+      }
+    }
+  </script>
+</body>
+</html>
